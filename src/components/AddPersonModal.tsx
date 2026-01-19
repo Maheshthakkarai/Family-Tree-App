@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, UserPlus, AlertCircle } from 'lucide-react';
+import { X, UserPlus, AlertCircle, Plus } from 'lucide-react';
 import { useFamilyStore } from '../store/useFamilyStore';
 import type { RelationshipType, Person, Gender, LifeStatus } from '../types';
 import { parseISO, isBefore } from 'date-fns';
@@ -198,7 +198,7 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                         <div>
                             <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Gender</label>
                             <div className="flex gap-2">
-                                {(['male', 'female', 'other'] as const).map(g => (
+                                {(['male', 'female'] as const).map(g => (
                                     <button
                                         key={g}
                                         type="button"
@@ -252,6 +252,25 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                                     className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all"
                                     placeholder="e.g. Architect"
                                 />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5 flex justify-between items-center">
+                                Profile Photo URL
+                                <span className="text-[10px] text-[#86868B] font-bold uppercase tracking-tight">Optional</span>
+                            </label>
+                            <div className="relative group">
+                                <input
+                                    type="url"
+                                    value={formData.photoUrl}
+                                    onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
+                                    placeholder="https://example.com/photo.jpg"
+                                    className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
+                                />
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0071E3] transition-colors">
+                                    <Plus size={18} />
+                                </div>
                             </div>
                         </div>
 

@@ -4,7 +4,7 @@ export type RelationshipType =
     | 'son' | 'daughter' | 'child'
     | 'brother' | 'sister';
 
-export type Gender = 'male' | 'female' | 'other' | 'not_specified';
+export type Gender = 'male' | 'female' | 'not_specified';
 
 export type LifeStatus = 'living' | 'demised';
 
