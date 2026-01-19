@@ -89,10 +89,10 @@ function App() {
 
         <button
           onClick={() => setIsHelpModalOpen(true)}
-          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/50 text-[#86868B] hover:text-[#007AFF] transition-all"
-          title="About & Help"
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-[#F5F5F7] rounded-xl text-[10px] font-black text-[#86868B] hover:text-[#007AFF] hover:border-[#007AFF]/30 transition-all shadow-sm active:scale-95 uppercase tracking-widest"
         >
-          <Info size={20} />
+          <Info size={14} />
+          <span>About & Help</span>
         </button>
       </header>
 
