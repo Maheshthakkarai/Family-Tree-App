@@ -4,16 +4,16 @@ import AddPersonModal from './components/AddPersonModal';
 import CreateFamilyModal from './components/CreateFamilyModal';
 import PersonDetailSidebar from './components/PersonDetailSidebar';
 import RegistryView from './components/RegistryView';
-import { Database, Layout } from 'lucide-react';
-
 import FamilySelector from './components/FamilySelector';
-
 import ExportImport from './components/ExportImport';
+import HelpModal from './components/HelpModal';
+import { Database, Layout, Info } from 'lucide-react';
 
 function App() {
   const [view, setView] = useState<'registry' | 'dashboard'>('registry');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCreateFamilyModalOpen, setIsCreateFamilyModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [editPersonId, setEditPersonId] = useState<string | null>(null);
 
@@ -25,6 +25,7 @@ function App() {
   const handleCloseModals = () => {
     setIsAddModalOpen(false);
     setIsCreateFamilyModalOpen(false);
+    setIsHelpModalOpen(false);
     setEditPersonId(null);
   };
 
@@ -85,6 +86,14 @@ function App() {
             <Layout size={15} /> VISUALIZER
           </button>
         </div>
+
+        <button
+          onClick={() => setIsHelpModalOpen(true)}
+          className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/50 text-[#86868B] hover:text-[#007AFF] transition-all"
+          title="About & Help"
+        >
+          <Info size={20} />
+        </button>
       </header>
 
       {/* Dynamic Main View */}
@@ -124,6 +133,10 @@ function App() {
         personId={selectedPersonId}
         onClose={() => setSelectedPersonId(null)}
         onEdit={handleEdit}
+      />
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={handleCloseModals}
       />
     </div>
   );
