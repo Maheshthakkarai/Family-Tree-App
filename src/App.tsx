@@ -7,13 +7,15 @@ import RegistryView from './components/RegistryView';
 import FamilySelector from './components/FamilySelector';
 import ExportImport from './components/ExportImport';
 import HelpModal from './components/HelpModal';
-import { Database, Layout, Info } from 'lucide-react';
+import UserManualModal from './components/UserManualModal';
+import { Database, Layout, Info, BookOpen } from 'lucide-react';
 
 function App() {
   const [view, setView] = useState<'registry' | 'dashboard'>('registry');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isCreateFamilyModalOpen, setIsCreateFamilyModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isUserManualOpen, setIsUserManualOpen] = useState(false);
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [editPersonId, setEditPersonId] = useState<string | null>(null);
 
@@ -26,6 +28,7 @@ function App() {
     setIsAddModalOpen(false);
     setIsCreateFamilyModalOpen(false);
     setIsHelpModalOpen(false);
+    setIsUserManualOpen(false);
     setEditPersonId(null);
   };
 
@@ -94,6 +97,14 @@ function App() {
           <Info size={14} />
           <span>About & Help</span>
         </button>
+
+        <button
+          onClick={() => setIsUserManualOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-white border border-[#F5F5F7] rounded-xl text-[10px] font-black text-[#007AFF] hover:bg-blue-50/50 transition-all shadow-sm active:scale-95 uppercase tracking-widest"
+        >
+          <BookOpen size={14} />
+          <span>How to use</span>
+        </button>
       </header>
 
       {/* Dynamic Main View */}
@@ -136,6 +147,10 @@ function App() {
       />
       <HelpModal
         isOpen={isHelpModalOpen}
+        onClose={handleCloseModals}
+      />
+      <UserManualModal
+        isOpen={isUserManualOpen}
         onClose={handleCloseModals}
       />
     </div>
