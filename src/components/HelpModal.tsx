@@ -96,6 +96,10 @@ const HelpModal = ({ isOpen, onClose }: HelpModalProps) => {
 
                 {/* Footer */}
                 <div className="p-6 bg-[#F5F5F7]/50 border-t border-[#F5F5F7] text-center shrink-0">
+                    <p className="text-[11px] font-bold text-[#1D1D1F] mb-3 leading-relaxed">
+                        For any feedback or comments, please contact <span className="text-[#007AFF]">Mahesh Thakkar</span>. <br />
+                        <span className="text-[#86868B] font-medium italic text-[10px]">"You know how to reach me :)"</span>
+                    </p>
                     <p className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest leading-none mb-1">Created for Generations</p>
                     <p className="text-[9px] text-[#ABACB1]">Version 1.2 • Premium Heritage Edition</p>
                 </div>
