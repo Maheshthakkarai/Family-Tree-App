@@ -145,20 +145,20 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-end">
-            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:justify-end">
+            <div className="absolute inset-0 bg-[#1D1D1F]/40 backdrop-blur-sm lg:backdrop-blur-none" onClick={onClose} />
 
-            <div className="relative w-full max-w-md h-full bg-white shadow-2xl p-8 flex flex-col animate-in slide-in-from-right duration-300">
-                <div className="flex items-center justify-between mb-8">
+            <div className="relative w-full lg:max-w-md h-full bg-white shadow-2xl p-6 lg:p-8 flex flex-col animate-in slide-in-from-right duration-300">
+                <div className="flex items-center justify-between mb-6 lg:mb-8 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#0071E3] rounded-xl flex items-center justify-center text-white">
+                        <div className="w-10 h-10 bg-[#0071E3] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
                             <UserPlus size={22} />
                         </div>
-                        <h2 className="text-2xl font-bold text-[#1D1D1F]">
+                        <h2 className="text-xl lg:text-2xl font-bold text-[#1D1D1F] truncate font-display italic">
                             {editModeId ? 'Edit Profile' : 'Add Person'}
                         </h2>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
                         <X size={20} className="text-gray-500" />
                     </button>
                 </div>

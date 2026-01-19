@@ -112,3 +112,30 @@ body {
 .animate-premium {
   animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@media (max-width: 768px) {
+  .font-display {
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Make touch targets larger on mobile */
+  button,
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+}
+
+/* Ensure React Flow canvas is touch-friendly */
+.react-flow__pane {
+  touch-action: none;
+}

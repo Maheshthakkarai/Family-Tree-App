@@ -24,14 +24,11 @@ const PersonDetailSidebar = ({ personId, onClose, onEdit }: PersonDetailSidebarP
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-end pointer-events-none">
-            <div
-                className="absolute inset-0 bg-black/5 backdrop-blur-[2px] pointer-events-auto"
-                onClick={onClose}
-            />
+        <div className="fixed inset-0 z-50 flex items-center justify-center lg:justify-end">
+            <div className="absolute inset-0 bg-[#1D1D1F]/40 backdrop-blur-sm lg:backdrop-blur-none" onClick={onClose} />
 
-            <div className="relative w-full max-w-sm h-full bg-white/95 backdrop-blur-2xl shadow-2xl p-8 flex flex-col pointer-events-auto animate-in slide-in-from-right duration-500 ease-out border-l border-white/20">
-                <div className="flex justify-between items-center mb-6">
+            <div className="relative w-full lg:max-w-md h-full bg-white shadow-2xl p-6 lg:p-8 flex flex-col animate-in slide-in-from-right duration-300">
+                <div className="flex items-center justify-between mb-8 shrink-0">
                     <button
                         onClick={() => onEdit(person.id)}
                         className="flex items-center gap-2 text-[#0071E3] font-semibold hover:bg-[#0071E3]/5 px-3 py-1.5 rounded-lg transition-colors"

@@ -216,25 +216,25 @@ const RegistryView = ({ onEdit, onCreateFamily, onAddMember }: RegistryViewProps
     }
 
     return (
-        <div className="max-w-[1600px] mx-auto p-12 animate-premium overflow-y-auto h-full">
+        <div className="max-w-[1600px] mx-auto p-4 lg:p-12 animate-premium overflow-y-auto h-full">
             {/* Header Area */}
-            <div className="flex justify-between items-end mb-16 px-2">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 lg:mb-16 px-2 gap-6">
                 <div className="flex flex-col gap-2">
-                    <h2 className="text-5xl font-black text-[#1D1D1F] tracking-tight font-display italic uppercase">
+                    <h2 className="text-3xl lg:text-5xl font-black text-[#1D1D1F] tracking-tight font-display italic uppercase leading-tight">
                         Lineage <span className="text-[#007AFF]">Registry</span>
                     </h2>
-                    <p className="text-[#86868B] text-xs font-black uppercase tracking-[0.4em]">Institutional Heritage Archives & Documentation</p>
+                    <p className="text-[#86868B] text-[10px] lg:text-xs font-black uppercase tracking-[0.2em] lg:tracking-[0.4em]">Integrated Heritage Archives</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3 w-full lg:w-auto">
                     <button
                         onClick={onAddMember}
-                        className="flex items-center gap-2 bg-[#F5F5F7] px-6 py-3 rounded-xl font-bold text-[#1D1D1F] hover:bg-gray-200 transition-all text-[11px] uppercase tracking-widest"
+                        className="flex-1 lg:flex-none flex items-center justify-center gap-2 bg-[#F5F5F7] px-4 lg:px-6 py-3 rounded-xl font-bold text-[#1D1D1F] hover:bg-gray-200 transition-all text-[11px] uppercase tracking-widest whitespace-nowrap"
                     >
                         <Plus size={16} /> Add Member
                     </button>
                     <button
                         onClick={onCreateFamily}
-                        className="flex items-center gap-2 bg-[#0071E3] px-6 py-3 rounded-xl font-bold text-white hover:bg-[#0077ED] transition-all shadow-lg shadow-blue-500/20 text-[11px] uppercase tracking-widest"
+                        className="flex-1 lg:flex-none flex items-center justify-center gap-2 bg-[#0071E3] px-4 lg:px-6 py-3 rounded-xl font-bold text-white hover:bg-[#0077ED] transition-all shadow-lg shadow-blue-500/20 text-[11px] uppercase tracking-widest whitespace-nowrap"
                     >
                         <Users size={16} /> New Collection
                     </button>
@@ -242,14 +242,14 @@ const RegistryView = ({ onEdit, onCreateFamily, onAddMember }: RegistryViewProps
             </div>
 
             {/* Row 1: Grand Parents (The Origin) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mb-8 lg:mb-16">
                 <div className="lg:col-start-2">
                     {renderGenerationColumn("Original Ancestors", 0, true)}
                 </div>
             </div>
 
             {/* Row 2: Future Generations Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 pb-12">
                 {renderGenerationColumn("1st Generation", 1)}
                 {renderGenerationColumn("2nd Generation", 2)}
                 {renderGenerationColumn("3rd Generation", 3)}
