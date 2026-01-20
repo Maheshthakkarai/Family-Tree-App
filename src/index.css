@@ -1,141 +1,134 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --bg-charcoal: #1a1a1a;
+  --accent-gold: #FFC107;
+  --text-off-white: #f8f8f8;
+  --text-muted: #94a3b8;
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: #FBFBFD;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-charcoal);
+  color: var(--text-off-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
 h2,
 h3,
+.font-serif {
+  font-family: 'Lora', serif;
+}
+
 .font-display {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Playfair Display', serif;
 }
 
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #1D1D1F;
-}
-
-/* Glassmorphism Utilities */
+/* Glassmorphism */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.glass-dark {
-  background: rgba(29, 29, 31, 0.8);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+.glass-gold {
+  background: rgba(255, 193, 7, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 193, 7, 0.1);
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 193, 7, 0.4);
+  border-radius: 10px;
+  border: 2px solid rgba(26, 26, 26, 0.8);
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 193, 7, 0.7);
 }
 
 /* React Flow Customizations */
+.react-flow__pane {
+  background-color: var(--bg-charcoal);
+  background-image: radial-gradient(rgba(255, 193, 7, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
 .react-flow__edge-path {
-  stroke-width: 2.5;
-  transition: stroke 0.3s ease;
+  stroke: rgba(255, 193, 7, 0.3);
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--accent-gold);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.5));
 }
 
 .react-flow__handle {
-  width: 6px;
-  height: 6px;
-  background: #0071E3;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 8px;
+  height: 8px;
+  background: var(--accent-gold);
+  border: 2px solid var(--bg-charcoal);
 }
 
 .react-flow__controls {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 14px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
 }
 
-.react-flow__pane {
-  background-image: radial-gradient(#E5E7EB 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-color: #FBFBFD;
+.react-flow__controls-button {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-off-white) !important;
+  fill: currentColor !important;
 }
 
+.react-flow__controls-button:hover {
+  background: rgba(255, 193, 7, 0.1) !important;
+}
 
 .react-flow__attribution {
   display: none !important;
 }
 
-.react-flow__node {
-  cursor: grab;
-}
+/* Animations */
+@keyframes glow {
 
-.react-flow__node:active {
-  cursor: grabbing;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.98) translateY(5px);
+  0%,
+  100% {
+    opacity: 0.5;
   }
 
-  to {
+  50% {
     opacity: 1;
-    transform: scale(1) translateY(0);
   }
 }
 
-.animate-premium {
-  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (max-width: 768px) {
-  .font-display {
-    letter-spacing: -0.02em;
-  }
-
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  h2 {
-    font-size: 1.25rem;
-  }
-
-  /* Make touch targets larger on mobile */
-  button,
-  input,
-  select,
-  textarea {
-    min-height: 44px;
-  }
-}
-
-/* Ensure React Flow canvas is touch-friendly */
-.react-flow__pane {
-  touch-action: none;
+.animate-glow {
+  animation: glow 3s infinite ease-in-out;
 }

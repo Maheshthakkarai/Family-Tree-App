@@ -7,47 +7,64 @@ import { Skull } from 'lucide-react';
 const PersonNode = ({ data, selected }: NodeProps<Person & { depth?: number }>) => {
     const { firstName, lastName, lifeStatus } = data;
 
-    const generationColors = [
-        'border-[#7B61FF] bg-white', // Gen 0
-        'border-[#00C48C] bg-white', // Gen 1
-        'border-[#0071E3] bg-white', // Gen 2
-        'border-[#97D700] bg-white', // Gen 3
-        'border-[#F59E0B] bg-white'  // Gen 4
-    ];
-
-    const depth = (data as any).depth || 0;
-    const borderColor = generationColors[Math.min(depth, generationColors.length - 1)].split(' ')[0];
+    const getInitials = () => {
+        return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+    };
 
     return (
         <div className="group relative">
             <Handle
                 type="target"
                 position={Position.Top}
-                className="!bg-slate-300 !border-white !w-2 !h-2"
+                className="!bg-[#FFC107] !border-[#1a1a1a] !w-3 !h-3"
             />
 
-            <div className={`w-[140px] px-2 py-3 border-2 rounded-lg shadow-sm transition-all duration-300 flex flex-col justify-center text-center bg-white ${borderColor} ${selected ? 'ring-4 ring-blue-500/20 border-blue-500 z-10' : 'hover:shadow-md'} ${lifeStatus === 'demised' ? 'grayscale-[0.5] opacity-80' : ''}`}>
-                <div className="text-[12px] font-black text-[#1D1D1F] leading-tight uppercase tracking-tight">
-                    {firstName}
-                </div>
-                <div className="text-[10px] font-bold text-[#4B5563] leading-tight uppercase mt-0.5 tracking-tighter">
-                    {lastName}
+            <div className={`relative flex flex-col items-center justify-center transition-all duration-500 ${selected ? 'scale-110 z-20' : 'hover:scale-105'}`}>
+                {/* Glow Effect */}
+                {selected && (
+                    <div className="absolute inset-0 rounded-full bg-[#FFC107]/40 blur-xl animate-pulse" />
+                )}
+
+                {/* Circular Avatar */}
+                <div
+                    className={`relative w-[700px] h-[450px] rounded-[60px] border-8 flex items-center justify-center transition-all duration-300 shadow-2xl
+            ${selected ? 'border-white shadow-xl bg-[#e0a800] scale-105' : 'border-[#FFC107]/50 bg-[#FFC107] hover:border-white/50'}`}
+                >
+                    <div className={`w-full h-full rounded-[60px] flex items-center justify-center overflow-hidden mix-blend-multiply opacity-10
+            ${selected ? 'bg-black/10' : 'bg-transparent'}`}>
+                        <span className={`text-[120px] font-display font-bold text-[#1a1a1a]`}>
+                            {getInitials()}
+                        </span>
+                    </div>
+
+                    {lifeStatus === 'demised' && (
+                        <div className="absolute -top-1 -right-1 w-8 h-8 glass rounded-full flex items-center justify-center text-white/40 border-white/10">
+                            <Skull size={14} />
+                        </div>
+                    )}
                 </div>
 
-                {lifeStatus === 'demised' && (
-                    <div className="absolute -top-2.5 -right-2.5 w-6 h-6 bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center text-gray-500 shadow-sm">
-                        <Skull size={12} />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center w-full z-10 pointer-events-none">
+                    <div className="text-[140px] font-display font-bold text-[#1a1a1a]/10 absolute inset-0 flex items-center justify-center select-none">
+                        {getInitials()}
                     </div>
-                )}
+                    <div className={`text-6xl font-display font-black leading-none mb-6 text-[#1a1a1a] drop-shadow-sm`}>
+                        {firstName}
+                    </div>
+                    <div className="text-3xl font-sans font-black text-[#1a1a1a]/80 uppercase tracking-[0.4em]">
+                        {lastName}
+                    </div>
+                </div>
             </div>
 
             <Handle
                 type="source"
                 position={Position.Bottom}
-                className="!bg-slate-300 !border-white !w-2 !h-2"
+                className="!bg-[#FFC107] !border-[#1a1a1a] !w-3 !h-3"
             />
         </div>
     );
 };
 
 export default memo(PersonNode);
+

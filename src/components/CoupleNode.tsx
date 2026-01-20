@@ -16,49 +16,39 @@ interface CoupleNodeData {
 }
 
 const CoupleNode = ({ data, selected }: NodeProps<CoupleNodeData>) => {
-    const { p1, spouses, depth } = data;
-
-    const generationColors = [
-        'border-[#7B61FF]', // Gen 0
-        'border-[#00C48C]', // Gen 1
-        'border-[#0071E3]', // Gen 2
-        'border-[#97D700]', // Gen 3
-        'border-[#F59E0B]'  // Gen 4
-    ];
-
-    const borderColor = generationColors[Math.min(depth, generationColors.length - 1)];
+    const { p1, spouses } = data;
 
     const getStatusStyles = (status: string) => {
         switch (status) {
             case 'divorced':
                 return {
-                    icon: <HeartOff size={10} className="text-red-500" />,
+                    icon: <HeartOff size={24} className="text-red-600" />,
                     label: 'Divorced',
-                    color: 'bg-red-50 text-red-600 border-red-100',
-                    divider: 'bg-red-200'
+                    color: 'text-red-900 border-red-900/10 bg-red-600/10',
                 };
             case 'separated':
                 return {
-                    icon: <UserMinus size={10} className="text-orange-500" />,
+                    icon: <UserMinus size={24} className="text-orange-700" />,
                     label: 'Separated',
-                    color: 'bg-orange-50 text-orange-600 border-orange-100',
-                    divider: 'bg-orange-200'
+                    color: 'text-orange-900 border-orange-900/10 bg-orange-600/10',
                 };
             case 'demised':
                 return {
-                    icon: <Skull size={10} className="text-gray-500" />,
+                    icon: <Skull size={24} className="text-gray-700" />,
                     label: 'Demised',
-                    color: 'bg-gray-50 text-gray-600 border-gray-100',
-                    divider: 'bg-gray-200'
+                    color: 'text-gray-900 border-gray-900/10 bg-gray-600/10',
                 };
             default:
                 return {
-                    icon: <Heart size={10} className="text-pink-500 fill-pink-500" />,
+                    icon: <Heart size={24} className="text-[#1a1a1a] fill-[#1a1a1a]" />,
                     label: 'Married',
-                    color: 'bg-pink-50 text-pink-600 border-pink-100',
-                    divider: 'bg-gray-200'
+                    color: 'text-[#1a1a1a] border-[#1a1a1a]/10 bg-[#1a1a1a]/5',
                 };
         }
+    };
+
+    const getInitials = (person: Person) => {
+        return `${person.firstName?.[0] || ''}${person.lastName?.[0] || ''}`.toUpperCase();
     };
 
     return (
@@ -66,65 +56,68 @@ const CoupleNode = ({ data, selected }: NodeProps<CoupleNodeData>) => {
             <Handle
                 type="target"
                 position={Position.Top}
-                className="!bg-slate-300 !border-white !w-2 !h-2"
+                className="!bg-[#FFC107] !border-[#1a1a1a] !w-3 !h-3"
             />
 
-            <div className={`flex items-stretch bg-white border-2 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 ${borderColor} ${selected ? 'ring-4 ring-blue-500/20 scale-105 z-10' : 'hover:shadow-2xl'}`}>
-                {/* Main Person (P1) */}
-                <div className={`w-[120px] px-3 py-4 flex flex-col justify-center text-center border-r border-gray-100 bg-[#F8FAFC]/50 ${p1.lifeStatus === 'demised' ? 'grayscale opacity-70' : ''}`}>
-                    <div className="text-[12px] font-black text-[#1D1D1F] leading-tight uppercase tracking-tight relative">
-                        {p1.firstName}
-                        {p1.lifeStatus === 'demised' && <Skull size={8} className="absolute -right-2 -top-1 opacity-40" />}
-                    </div>
-                    <div className="text-[10px] font-bold text-[#64748B] leading-tight uppercase mt-0.5 tracking-tighter">
-                        {p1.lastName}
-                    </div>
-                </div>
+            <div className={`flex flex-col gap-20 p-24 rounded-[80px] transition-all duration-500
+                    ${selected ? 'bg-[#e0a800] ring-8 ring-white shadow-2xl scale-105 z-20' : 'bg-[#FFC107] hover:bg-[#ffc82a] shadow-xl'}
+                    text-[#1a1a1a]`}>
 
-                {/* Spouses Column */}
-                <div className="flex flex-col flex-1 divide-y divide-gray-100">
-                    {spouses.map((s, idx) => {
-                        const styles = getStatusStyles(s.status);
-                        return (
-                            <div key={idx} className="flex items-stretch min-w-[140px]">
-                                {/* Divider/Status Point */}
-                                <div className="flex flex-col items-center justify-center bg-white px-2 relative border-r border-gray-50">
-                                    <div className={`w-[1px] h-full ${styles.divider}`} />
-                                    <div className={`absolute inset-0 flex items-center justify-center`}>
-                                        <div className={`w-5 h-5 rounded-full border shadow-sm flex items-center justify-center bg-white z-10`}>
+                <div className="flex items-center gap-20">
+                    {/* Main Person Avatar */}
+                    <div className="flex flex-col items-center gap-8">
+                        <div className={`w-[450px] h-[450px] rounded-[60px] border-4 flex items-center justify-center shadow-inner
+              ${selected ? 'border-white/50 bg-black/5' : 'border-[#1a1a1a]/10 bg-black/5'}
+              ${p1.lifeStatus === 'demised' ? 'grayscale opacity-70' : ''}`}>
+                            <span className={`text-[120px] font-display font-bold text-[#1a1a1a]`}>
+                                {getInitials(p1)}
+                            </span>
+                        </div>
+                        <div className="text-6xl font-display font-bold text-[#1a1a1a] uppercase tracking-tight">{p1.firstName}</div>
+                    </div>
+
+                    {/* Spouses List */}
+                    <div className="flex flex-col gap-3">
+                        {spouses.map((s, idx) => {
+                            const styles = getStatusStyles(s.status);
+                            return (
+                                <div key={idx} className="flex items-center gap-3">
+                                    <div className="flex flex-col items-center">
+                                        <div className="w-12 h-12 rounded-full border border-[#1a1a1a]/20 flex items-center justify-center bg-white/20">
                                             {styles.icon}
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Spouse Box */}
-                                <div className={`flex-1 px-3 py-4 flex flex-col justify-center text-center bg-white relative ${s.person.lifeStatus === 'demised' ? 'grayscale opacity-70' : ''}`}>
-                                    <div className="text-[12px] font-black text-[#1D1D1F] leading-tight uppercase tracking-tight relative">
-                                        {s.person.firstName}
-                                        {s.person.lifeStatus === 'demised' && <Skull size={8} className="absolute -right-2 -top-1 opacity-40" />}
-                                    </div>
-                                    <div className="text-[10px] font-bold text-[#64748B] leading-tight uppercase mt-0.5 tracking-tighter">
-                                        {s.person.lastName}
-                                    </div>
-
-                                    {/* Small Status Badge for each spouse */}
-                                    <div className={`absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[6px] font-black uppercase tracking-wider ${styles.color}`}>
-                                        {styles.label}
+                                    <div className="flex items-center gap-2 pr-2">
+                                        <div className={`w-[350px] h-[350px] rounded-[40px] border-2 flex items-center justify-center bg-black/5
+                      ${s.person.lifeStatus === 'demised' ? 'grayscale opacity-70' : ''}
+                      border-[#1a1a1a]/10`}>
+                                            <span className="text-[100px] font-display font-bold text-[#1a1a1a]/80">
+                                                {getInitials(s.person)}
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <div className="text-5xl font-display font-bold text-[#1a1a1a]/90 uppercase leading-none">{s.person.firstName}</div>
+                                            <div className={`text-2xl font-black uppercase tracking-widest mt-2 ${styles.color} px-4 py-2 rounded-xl bg-black/5`}>
+                                                {styles.label}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
             <Handle
                 type="source"
                 position={Position.Bottom}
-                className="!bg-emerald-500 !border-white !w-2 !h-2"
+                className="!bg-[#FFC107] !border-[#1a1a1a] !w-3 !h-3"
             />
         </div>
     );
 };
 
 export default memo(CoupleNode);
+

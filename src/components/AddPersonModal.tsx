@@ -12,7 +12,7 @@ interface AddPersonModalProps {
 
 const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) => {
     const { families, activeFamilyId, addPerson, updatePerson, connectPeople, updateRelationshipStatus } = useFamilyStore();
-    const activeFamily = families.find(f => f.id === activeFamilyId) || families[0];
+    const activeFamily = families.find((f: any) => f.id === activeFamilyId) || families[0];
     const people = activeFamily?.people || [];
     const relationships = activeFamily?.relationships || [];
     const [error, setError] = useState<string | null>(null);
@@ -30,15 +30,15 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
         relationship: {
             relatedTo: '',
             type: 'child' as RelationshipType,
-            status: 'married' as 'married' | 'divorced' | 'separated' | 'demised'
+            status: 'married' as 'married' | 'divorced' | 'separated'
         }
     });
 
     useEffect(() => {
         if (editModeId) {
-            const person = people.find(p => p.id === editModeId);
+            const person = people.find((p: any) => p.id === editModeId);
             if (person) {
-                const spouseRel = relationships.find(r =>
+                const spouseRel = relationships.find((r: any) =>
                     r.type === 'spouse' && (r.source === editModeId || r.target === editModeId)
                 );
 
@@ -97,22 +97,19 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
         if (editModeId) {
             updatePerson(editModeId, personData);
 
-            // If we have a spouse relationship, update its status
-            const spouseRel = relationships.find(r =>
+            const spouseRel = relationships.find((r: any) =>
                 r.type === 'spouse' && (r.source === editModeId || r.target === editModeId)
             );
             if (spouseRel && formData.relationship.status) {
                 updateRelationshipStatus(spouseRel.id, formData.relationship.status);
             }
         } else {
-            // Logic for new person
             if (formData.relationship.relatedTo && formData.birthDate) {
-                const anchor = people.find(p => p.id === formData.relationship.relatedTo);
+                const anchor = people.find((p: any) => p.id === formData.relationship.relatedTo);
                 if (anchor && anchor.birthDate) {
                     const newBirth = parseISO(formData.birthDate);
                     const anchorBirth = parseISO(anchor.birthDate);
 
-                    // Simple generational checks
                     if (['father', 'mother', 'parent'].includes(formData.relationship.type) && isBefore(anchorBirth, newBirth)) {
                         setError("Conflict: A parent must be older than their child.");
                         return;
@@ -145,143 +142,144 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
     ];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center lg:justify-end">
-            <div className="absolute inset-0 bg-[#1D1D1F]/40 backdrop-blur-sm lg:backdrop-blur-none" onClick={onClose} />
+        <div className="fixed inset-0 z-[110] flex items-center justify-center lg:justify-end">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-            <div className="relative w-full lg:max-w-md h-full bg-white shadow-2xl p-6 lg:p-8 flex flex-col animate-in slide-in-from-right duration-300">
-                <div className="flex items-center justify-between mb-6 lg:mb-8 shrink-0">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#0071E3] rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20">
-                            <UserPlus size={22} />
+            <div className="relative w-full lg:max-w-md h-full glass border-l border-white/10 shadow-2xl p-6 lg:p-10 flex flex-col animate-in slide-in-from-right duration-500 overflow-hidden">
+                <div className="flex items-center justify-between mb-8 shrink-0">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-[#FFC107] shrink-0 border-[#FFC107]/20 shadow-xl">
+                            <UserPlus size={24} />
                         </div>
-                        <h2 className="text-xl lg:text-2xl font-bold text-[#1D1D1F] truncate font-display italic">
-                            {editModeId ? 'Edit Profile' : 'Add Person'}
-                        </h2>
+                        <div>
+                            <h3 className="uppercase tracking-[0.3em] text-[10px] font-bold text-[#FFC107]">Records Department</h3>
+                            <h2 className="text-2xl font-display text-white truncate">
+                                {editModeId ? 'Annotate Record' : 'Append Lineage'}
+                            </h2>
+                        </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors shrink-0">
-                        <X size={20} className="text-gray-500" />
+                    <button onClick={onClose} className="p-2 glass text-white/40 hover:text-white transition-all rounded-full">
+                        <X size={20} />
                     </button>
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-2xl flex items-center gap-3 text-sm font-bold border border-red-100 animate-in fade-in slide-in-from-top-2">
+                    <div className="mb-8 p-4 bg-red-500/10 text-red-400 rounded-2xl flex items-center gap-3 text-sm font-medium border border-red-500/20 animate-in fade-in slide-in-from-top-4">
                         <AlertCircle size={18} />
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pr-2">
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-8">
                     <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">First Name</label>
+                                <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">First Name</label>
                                 <input
                                     required
                                     type="text"
                                     value={formData.firstName}
                                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all"
+                                    className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white placeholder-white/20"
+                                    placeholder="John"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Last Name</label>
+                                <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">Last Name</label>
                                 <input
                                     required
                                     type="text"
                                     value={formData.lastName}
                                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all"
+                                    className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white placeholder-white/20"
+                                    placeholder="Doe"
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Gender</label>
-                            <div className="flex gap-2">
-                                {(['male', 'female'] as const).map(g => (
-                                    <button
-                                        key={g}
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, gender: g })}
-                                        className={`flex-1 py-2 px-3 rounded-xl border-2 text-sm font-bold transition-all ${formData.gender === g
-                                            ? 'bg-[#0071E3] text-white border-blue-500'
-                                            : 'bg-white text-[#1D1D1F] border-gray-100 hover:border-gray-200'
-                                            }`}
-                                    >
-                                        {g.charAt(0).toUpperCase() + g.slice(1)}
-                                    </button>
-                                ))}
+                        <div className="grid grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-[11px] font-bold text-white/40 mb-3 uppercase tracking-widest">Gender</label>
+                                <div className="flex gap-2">
+                                    {(['male', 'female'] as const).map(g => (
+                                        <button
+                                            key={g}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, gender: g })}
+                                            className={`flex-1 py-3 px-3 rounded-xl border text-[11px] font-bold uppercase tracking-widest transition-all ${formData.gender === g
+                                                ? 'bg-[#FFC107] text-[#1a1a1a] border-[#FFC107] shadow-lg shadow-[#FFC107]/20'
+                                                : 'glass border-transparent text-white/60 hover:border-white/20'
+                                                }`}
+                                        >
+                                            {g}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Life Status</label>
-                            <div className="flex gap-2">
-                                {(['living', 'demised'] as const).map(s => (
-                                    <button
-                                        key={s}
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, lifeStatus: s })}
-                                        className={`flex-1 py-2 px-3 rounded-xl border-2 text-sm font-bold transition-all ${formData.lifeStatus === s
-                                            ? 'bg-[#0071E3] text-white border-blue-500'
-                                            : 'bg-white text-[#1D1D1F] border-gray-100 hover:border-gray-200'
-                                            }`}
-                                    >
-                                        {s.charAt(0).toUpperCase() + s.slice(1)}
-                                    </button>
-                                ))}
+                            <div>
+                                <label className="block text-[11px] font-bold text-white/40 mb-3 uppercase tracking-widest">Status</label>
+                                <div className="flex gap-2">
+                                    {(['living', 'demised'] as const).map(s => (
+                                        <button
+                                            key={s}
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, lifeStatus: s })}
+                                            className={`flex-1 py-3 px-3 rounded-xl border text-[11px] font-bold uppercase tracking-widest transition-all ${formData.lifeStatus === s
+                                                ? 'bg-[#FFC107] text-[#1a1a1a] border-[#FFC107] shadow-lg shadow-[#FFC107]/20'
+                                                : 'glass border-transparent text-white/60 hover:border-white/20'
+                                                }`}
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Date of Birth</label>
+                                <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">Date of Birth</label>
                                 <input
                                     type="date"
                                     value={formData.birthDate}
                                     onChange={(e) => setFormData({ ...formData, birthDate: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all"
+                                    className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white inverted-calendar-icon"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Occupation</label>
+                                <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">Occupation</label>
                                 <input
                                     type="text"
                                     value={formData.occupation}
                                     onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
-                                    className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all"
+                                    className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white placeholder-white/20"
                                     placeholder="e.g. Architect"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5 flex justify-between items-center">
+                            <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest flex justify-between items-center">
                                 Profile Photo URL
-                                <span className="text-[10px] text-[#86868B] font-bold uppercase tracking-tight">Optional</span>
+                                <span className="text-[9px] text-[#FFC107]/40 tracking-normal opacity-60">Optional</span>
                             </label>
-                            <div className="relative group">
-                                <input
-                                    type="url"
-                                    value={formData.photoUrl}
-                                    onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
-                                    placeholder="https://example.com/photo.jpg"
-                                    className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all text-sm"
-                                />
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0071E3] transition-colors">
-                                    <Plus size={18} />
-                                </div>
-                            </div>
+                            <input
+                                type="url"
+                                value={formData.photoUrl}
+                                onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
+                                placeholder="https://images.unsplash.com/..."
+                                className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white placeholder-white/20 text-sm"
+                            />
                         </div>
 
                         {
                             editModeId && formData.relationship.relatedTo && (
-                                <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <label className="block text-sm font-semibold text-[#1D1D1F] mb-3">
-                                        Relationship Status
+                                <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                                    <label className="block text-[11px] font-bold text-white/40 mb-3 uppercase tracking-widest">
+                                        Marriage Status
                                     </label>
-                                    <div className="flex gap-2">
-                                        {(['married', 'divorced', 'separated', 'demised'] as const).map(s => (
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {(['married', 'divorced', 'separated'] as const).map(s => (
                                             <button
                                                 key={s}
                                                 type="button"
@@ -289,9 +287,9 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                                                     ...formData,
                                                     relationship: { ...formData.relationship, status: s }
                                                 })}
-                                                className={`flex-1 py-2 px-3 rounded-xl border-2 text-[11px] font-black uppercase tracking-wider transition-all ${formData.relationship.status === s
-                                                    ? 'bg-[#0071E3] text-white border-blue-500 shadow-md'
-                                                    : 'bg-white text-[#1D1D1F] border-gray-100 hover:border-gray-200'
+                                                className={`py-3 px-3 rounded-xl border text-[10px] font-black uppercase tracking-[0.2em] transition-all ${formData.relationship.status === s
+                                                    ? 'bg-[#FFC107] text-[#1a1a1a] border-[#FFC107] shadow-lg shadow-[#FFC107]/10'
+                                                    : 'glass border-transparent text-white/40 hover:border-white/10'
                                                     }`}
                                             >
                                                 {s}
@@ -305,32 +303,37 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                         {
                             !editModeId && people.length > 0 && (
                                 <>
-                                    <hr className="border-gray-100" />
-                                    <div className="space-y-4">
-                                        <h3 className="text-sm font-bold text-[#86868B] uppercase tracking-wider">Lineage Mapping</h3>
+                                    <div className="h-px bg-white/5 w-full my-8" />
+                                    <div className="space-y-6">
+                                        <h3 className="text-xs font-black text-[#FFC107] uppercase tracking-[0.3em]">Lineage Blueprint</h3>
 
                                         <div>
-                                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Relative in Registry</label>
-                                            <select
-                                                value={formData.relationship.relatedTo}
-                                                onChange={(e) => setFormData({
-                                                    ...formData,
-                                                    relationship: { ...formData.relationship, relatedTo: e.target.value }
-                                                })}
-                                                className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all appearance-none"
-                                            >
-                                                <option value="">Select family member...</option>
-                                                {people.map(p => (
-                                                    <option key={p.id} value={p.id}>{p.firstName} {p.lastName}</option>
-                                                ))}
-                                            </select>
+                                            <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">Existing Kin</label>
+                                            <div className="relative">
+                                                <select
+                                                    value={formData.relationship.relatedTo}
+                                                    onChange={(e) => setFormData({
+                                                        ...formData,
+                                                        relationship: { ...formData.relationship, relatedTo: e.target.value }
+                                                    })}
+                                                    className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white appearance-none"
+                                                >
+                                                    <option value="" className="bg-[#1a1a1a]">Select relative...</option>
+                                                    {people.map((p: any) => (
+                                                        <option key={p.id} value={p.id} className="bg-[#1a1a1a]">{p.firstName} {p.lastName}</option>
+                                                    ))}
+                                                </select>
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/20">
+                                                    <Plus size={16} />
+                                                </div>
+                                            </div>
                                         </div>
 
                                         {formData.relationship.relatedTo && (
-                                            <div className="space-y-4">
+                                            <div className="space-y-6 animate-in fade-in slide-in-from-top-4">
                                                 <div>
-                                                    <label className="block text-sm font-semibold text-[#1D1D1F] mb-3">
-                                                        This person is the...
+                                                    <label className="block text-[11px] font-bold text-white/40 mb-3 uppercase tracking-widest">
+                                                        Kinship Type
                                                     </label>
                                                     <div className="grid grid-cols-2 gap-2">
                                                         {relOptions.map((opt) => (
@@ -341,25 +344,25 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                                                                     ...formData,
                                                                     relationship: { ...formData.relationship, type: opt.value }
                                                                 })}
-                                                                className={`flex items-center justify-between px-4 py-3 rounded-xl border-2 text-[13px] font-bold transition-all ${formData.relationship.type === opt.value
-                                                                    ? 'bg-[#0071E3]/5 text-[#0071E3] border-[#0071E3]'
-                                                                    : 'bg-[#F5F5F7] text-[#1D1D1F] border-transparent hover:border-gray-200'
+                                                                className={`flex flex-col items-center justify-center py-4 rounded-xl border transition-all ${formData.relationship.type === opt.value
+                                                                    ? 'bg-[#FFC107]/10 text-[#FFC107] border-[#FFC107]/40 shadow-xl'
+                                                                    : 'glass border-transparent text-white/30 hover:border-white/10'
                                                                     }`}
                                                             >
-                                                                {opt.label}
-                                                                <span className="text-[10px] text-[#86868B] uppercase opacity-60">{opt.group}</span>
+                                                                <span className="text-[12px] font-bold">{opt.label}</span>
+                                                                <span className="text-[9px] font-black uppercase tracking-tighter opacity-40 mt-1">{opt.group}</span>
                                                             </button>
                                                         ))}
                                                     </div>
                                                 </div>
 
                                                 {formData.relationship.type === 'spouse' && (
-                                                    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                                                        <label className="block text-sm font-semibold text-[#1D1D1F] mb-3">
-                                                            Relationship Status
+                                                    <div className="animate-in fade-in slide-in-from-top-4">
+                                                        <label className="block text-[11px] font-bold text-white/40 mb-3 uppercase tracking-widest">
+                                                            Marriage Status
                                                         </label>
-                                                        <div className="flex gap-2">
-                                                            {(['married', 'divorced', 'separated', 'demised'] as const).map(s => (
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {(['married', 'divorced', 'separated'] as const).map(s => (
                                                                 <button
                                                                     key={s}
                                                                     type="button"
@@ -367,9 +370,9 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                                                                         ...formData,
                                                                         relationship: { ...formData.relationship, status: s }
                                                                     })}
-                                                                    className={`flex-1 py-2 px-3 rounded-xl border-2 text-[11px] font-black uppercase tracking-wider transition-all ${formData.relationship.status === s
-                                                                        ? 'bg-[#0071E3] text-white border-blue-500 shadow-md'
-                                                                        : 'bg-white text-[#1D1D1F] border-gray-100 hover:border-gray-200'
+                                                                    className={`py-3 px-3 rounded-xl border text-[10px] font-black uppercase tracking-[0.2em] transition-all ${formData.relationship.status === s
+                                                                        ? 'bg-[#FFC107] text-[#1a1a1a] border-[#FFC107] shadow-lg shadow-[#FFC107]/10'
+                                                                        : 'glass border-transparent text-white/40 hover:border-white/10'
                                                                         }`}
                                                                 >
                                                                     {s}
@@ -386,23 +389,23 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
                         }
 
                         <div>
-                            <label className="block text-sm font-semibold text-[#1D1D1F] mb-1.5">Biography</label>
+                            <label className="block text-[11px] font-bold text-white/40 mb-2 uppercase tracking-widest">Archival Biography</label>
                             <textarea
                                 value={formData.bio}
                                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                rows={3}
-                                className="w-full px-4 py-2.5 bg-[#F5F5F7] border-none rounded-xl focus:ring-2 focus:ring-[#0071E3] transition-all resize-none"
-                                placeholder="Birthplace, key life events..."
+                                rows={4}
+                                className="w-full px-5 py-3.5 glass border-transparent focus:border-[#FFC107]/50 rounded-2xl focus:ring-0 transition-all text-white placeholder-white/20 resize-none font-serif italic text-sm"
+                                placeholder="Chronicle their journey, birthplace, and significant contributions..."
                             />
                         </div>
                     </div >
 
-                    <div className="mt-8 pt-6 border-t border-gray-100">
+                    <div className="mt-10 pb-8 shrink-0">
                         <button
                             type="submit"
-                            className="w-full bg-[#0071E3] text-white py-4 rounded-2xl font-bold hover:bg-[#0077ED] transition-all shadow-lg active:scale-[0.98]"
+                            className="w-full bg-[#FFC107] text-[#1a1a1a] py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] shadow-xl hover:shadow-[#FFC107]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                         >
-                            {editModeId ? 'Save Changes' : 'Build Connection'}
+                            {editModeId ? 'Update Archives' : 'Seal the Record'}
                         </button>
                     </div>
                 </form >
@@ -412,3 +415,4 @@ const AddPersonModal = ({ isOpen, onClose, editModeId }: AddPersonModalProps) =>
 };
 
 export default AddPersonModal;
+

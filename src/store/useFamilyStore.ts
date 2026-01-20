@@ -21,10 +21,10 @@ interface FamilyStore {
     addPerson: (person: Omit<Person, 'id'>) => string;
     updatePerson: (id: string, updates: Partial<Person>) => void;
     deletePerson: (id: string) => void;
-    addRelationship: (sourceId: string, targetId: string, type: 'parent' | 'spouse', label?: string, status?: 'married' | 'divorced' | 'separated' | 'demised') => boolean;
+    addRelationship: (sourceId: string, targetId: string, type: 'parent' | 'spouse', label?: string, status?: 'married' | 'divorced' | 'separated') => boolean;
     removeRelationship: (id: string) => void;
-    updateRelationshipStatus: (id: string, status: 'married' | 'divorced' | 'separated' | 'demised') => void;
-    connectPeople: (newPersonId: string, relatedToId: string, relType: RelationshipType, status?: 'married' | 'divorced' | 'separated' | 'demised') => void;
+    updateRelationshipStatus: (id: string, status: 'married' | 'divorced' | 'separated') => void;
+    connectPeople: (newPersonId: string, relatedToId: string, relType: RelationshipType, status?: 'married' | 'divorced' | 'separated') => void;
     exportAllData: () => string;
     importAllData: (jsonData: string) => boolean;
 }

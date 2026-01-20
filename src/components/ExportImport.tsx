@@ -12,7 +12,7 @@ const ExportImport = () => {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `family_tree_backup_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `generations_portal_archive_${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -27,14 +27,13 @@ const ExportImport = () => {
         reader.onload = (e) => {
             const content = e.target?.result as string;
             if (importAllData(content)) {
-                alert('Family Tree restored successfully!');
-                window.location.reload(); // Refresh to ensure all components update with new store state
+                // Success
+                window.location.reload();
             } else {
-                alert('Failed to restore data. Please check the file format.');
+                alert('Archive corrupt or invalid. Restoration aborted.');
             }
         };
         reader.readAsText(file);
-        // Clear input so same file can be imported again if needed
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -42,18 +41,18 @@ const ExportImport = () => {
         <div className="flex gap-2">
             <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-100 rounded-xl text-[11px] font-bold text-gray-600 hover:text-[#0071E3] hover:border-[#0071E3] transition-all group"
-                title="Download Backup"
+                className="flex items-center gap-2 px-4 py-2.5 glass border-white/5 rounded-2xl text-[10px] font-black text-white/40 hover:text-[#FFC107] hover:border-[#FFC107]/20 transition-all group tracking-[0.1em]"
+                title="Vault Archeology: Export"
             >
-                <Download size={14} className="group-hover:-translate-y-0.5 transition-transform" />
+                <Download size={14} className="group-hover:scale-110 transition-transform" />
                 <span>EXPORT</span>
             </button>
             <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-100 rounded-xl text-[11px] font-bold text-gray-600 hover:text-[#0071E3] hover:border-[#0071E3] transition-all group"
-                title="Upload Backup"
+                className="flex items-center gap-2 px-4 py-2.5 glass border-white/5 rounded-2xl text-[10px] font-black text-white/40 hover:text-[#FFC107] hover:border-[#FFC107]/20 transition-all group tracking-[0.1em]"
+                title="Vault Archeology: Import"
             >
-                <Upload size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                <Upload size={14} className="group-hover:scale-110 transition-transform" />
                 <span>IMPORT</span>
             </button>
             <input
@@ -68,3 +67,4 @@ const ExportImport = () => {
 };
 
 export default ExportImport;
+

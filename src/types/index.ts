@@ -27,7 +27,7 @@ export interface Relationship {
     target: string; // The "Junior" node (Child/Spouse)
     type: 'parent' | 'spouse'; // We simplify the underlying storage to these two core types
     label?: string; // Metadata label like "Father", "Daughter" etc.
-    status?: 'married' | 'divorced' | 'separated' | 'demised';
+    status?: 'married' | 'divorced' | 'separated';
 }
 
 export interface Family {

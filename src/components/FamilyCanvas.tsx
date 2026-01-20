@@ -1,11 +1,10 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import ReactFlow, {
     Background,
     Controls,
     Panel,
     useNodesState,
     useEdgesState,
-    MarkerType,
 } from 'reactflow';
 import type {
     Edge,
@@ -34,6 +33,7 @@ const FamilyCanvas = ({ onNodeClick }: {
     const relationships = activeFamily?.relationships || [];
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
     const layoutTree = useCallback((currentNodes: Node[], currentEdges: Edge[]) => {
         if (currentNodes.length === 0) {
@@ -57,14 +57,11 @@ const FamilyCanvas = ({ onNodeClick }: {
         const unions: Map<string, { p1: Person, spouses: { person: Person, status: any }[], relIds: string[] }> = new Map();
         const processedRelIds = new Set<string>();
 
-        // Heuristic: identify people who are "anchors" (have parents or have multiple spouses)
         const children = new Set(relationships.filter(r => r.type === 'parent').map(r => r.target));
 
         people.forEach(p => {
             const rels = spouseRels.filter(r => !processedRelIds.has(r.id) && (r.source === p.id || r.target === p.id));
             if (rels.length > 0) {
-                // We pick this person as anchor if they are a child of someone OR they have multiple spouses
-                // Or if their spouse doesn't have parents.
                 const shouldBeAnchor = children.has(p.id) || rels.length > 1 || !rels.some(r => {
                     const spouseId = r.source === p.id ? r.target : r.source;
                     return children.has(spouseId);
@@ -88,7 +85,6 @@ const FamilyCanvas = ({ onNodeClick }: {
             }
         });
 
-        // Catch any remaining spouse relationships
         spouseRels.forEach(rel => {
             if (processedRelIds.has(rel.id)) return;
             const p1 = people.find(p => p.id === rel.source);
@@ -116,7 +112,6 @@ const FamilyCanvas = ({ onNodeClick }: {
             });
         });
 
-        // 2. Individuals (No spouse)
         people.forEach(p => {
             if (!processedPersonIds.has(p.id)) {
                 finalNodes.push({
@@ -128,8 +123,7 @@ const FamilyCanvas = ({ onNodeClick }: {
             }
         });
 
-        // 3. Parental Routing
-        const childLinks = new Map<string, string[]>(); // childId -> [parentIds]
+        const childLinks = new Map<string, string[]>();
         relationships.filter(r => r.type === 'parent').forEach(r => {
             if (!childLinks.has(r.target)) childLinks.set(r.target, []);
             childLinks.get(r.target)!.push(r.source);
@@ -144,7 +138,6 @@ const FamilyCanvas = ({ onNodeClick }: {
 
             let linkedToCouple = false;
 
-            // Does child belong to a union node?
             unions.forEach((union, anchorId) => {
                 const coupleNodeId = `union_${anchorId}`;
                 const isAnchorParent = parentIds.includes(union.p1.id);
@@ -156,14 +149,12 @@ const FamilyCanvas = ({ onNodeClick }: {
                         source: coupleNodeId,
                         target: childNodeId,
                         type: 'step',
-                        style: { stroke: '#10B981', strokeWidth: 2.5 },
-                        markerEnd: { type: MarkerType.ArrowClosed, color: '#10B981', width: 20, height: 20 }
+                        style: { stroke: 'rgba(255, 193, 7, 0.4)', strokeWidth: 4 },
                     });
                     linkedToCouple = true;
                 }
             });
 
-            // If not found in a union node, find individual parent nodes
             if (!linkedToCouple) {
                 parentIds.forEach(pId => {
                     const parentNodeId = finalNodes.find(n =>
@@ -176,8 +167,7 @@ const FamilyCanvas = ({ onNodeClick }: {
                             source: parentNodeId,
                             target: childNodeId,
                             type: 'step',
-                            style: { stroke: '#10B981', strokeWidth: 2.5 },
-                            markerEnd: { type: MarkerType.ArrowClosed, color: '#10B981', width: 20, height: 20 }
+                            style: { stroke: 'rgba(255, 193, 7, 0.4)', strokeWidth: 4 },
                         });
                     }
                 });
@@ -187,36 +177,74 @@ const FamilyCanvas = ({ onNodeClick }: {
         layoutTree(finalNodes, finalEdges);
     }, [people, relationships, layoutTree]);
 
+
+    const styledNodes = useMemo(() => {
+        if (!hoveredNodeId) return nodes;
+        return nodes.map(node => {
+            const isDirectlyConnected = edges.some(e =>
+                (e.source === hoveredNodeId && e.target === node.id) ||
+                (e.target === hoveredNodeId && e.source === node.id)
+            );
+            const isHovered = node.id === hoveredNodeId;
+
+            return {
+                ...node,
+                style: {
+                    ...node.style,
+                    opacity: isHovered || isDirectlyConnected ? 1 : 0.3,
+                    transition: 'opacity 0.3s ease',
+                }
+            };
+        });
+    }, [nodes, edges, hoveredNodeId]);
+
+    const styledEdges = useMemo(() => {
+        if (!hoveredNodeId) return edges;
+        return edges.map(edge => {
+            const isConnected = edge.source === hoveredNodeId || edge.target === hoveredNodeId;
+            return {
+                ...edge,
+                style: {
+                    ...edge.style,
+                    stroke: isConnected ? '#FFC107' : 'rgba(255, 255, 255, 0.1)',
+                    strokeWidth: isConnected ? 3 : 1,
+                    opacity: isConnected ? 1 : 0.2,
+                }
+            };
+        });
+    }, [edges, hoveredNodeId]);
+
     return (
-        <div className="w-full h-full bg-[#f8fafc]">
+        <div className="w-full h-full bg-[#1a1a1a]">
             <ReactFlow
-                nodes={nodes}
-                edges={edges}
+                nodes={styledNodes}
+                edges={styledEdges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 nodeTypes={nodeTypes}
                 onNodeClick={(_, node) => {
                     if (node.type === 'person') onNodeClick(node.id);
-                    // For couples we might need a way to choose which one to edit, 
-                    // but for now let's just default to p1 or similar
+                    if (node.type === 'couple') onNodeClick(node.data.p1.id);
                 }}
+                onNodeMouseEnter={(_, node) => setHoveredNodeId(node.id)}
+                onNodeMouseLeave={() => setHoveredNodeId(null)}
                 fitView
-                fitViewOptions={{ padding: 0.2 }}
+                fitViewOptions={{ padding: 0 }}
                 nodesDraggable={true}
                 nodesConnectable={false}
                 elementsSelectable={true}
-                minZoom={0.1}
-                maxZoom={2}
+                minZoom={0.001}
+                maxZoom={4}
             >
-                <Background color="#cbd5e1" gap={40} size={1} />
-                <Controls showInteractive={false} />
+                <Background color="rgba(255, 193, 7, 0.05)" gap={30} size={1} />
+                <Controls showInteractive={false} className="glass" />
                 <Panel position="top-right" className="flex gap-2">
                     <button
                         onClick={() => layoutTree(nodes, edges)}
-                        className="flex items-center gap-2 bg-white border border-slate-200 px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:bg-slate-50 transition-all font-bold text-sm text-slate-700 active:scale-95"
+                        className="flex items-center gap-2 glass px-5 py-2.5 rounded-2xl shadow-xl hover:bg-white/10 transition-all font-bold text-xs text-white/80 active:scale-95 border-white/5"
                     >
-                        <RefreshCcw size={16} className="text-blue-500" />
-                        Reset & Align
+                        <RefreshCcw size={14} className="text-[#FFC107]" />
+                        REFRESH LAYOUT
                     </button>
                 </Panel>
             </ReactFlow>
@@ -225,3 +253,4 @@ const FamilyCanvas = ({ onNodeClick }: {
 };
 
 export default FamilyCanvas;
+
