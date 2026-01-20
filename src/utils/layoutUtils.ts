@@ -70,38 +70,11 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
     // Sort children by birth date if available (optional optimization)
 
     // 2. Execute Tidy Tree Layout Algorithm (simplified Walker)
-    let maxX = 0;
+    // 2. Execute Tidy Tree Layout Algorithm (simplified Walker)
 
     const layoutTree = (root: TreeNode) => {
 
-        // First Walk: Post-order traversal to calculate initial positions
-        const firstWalk = (node: TreeNode, level: number) => {
-            node.depth = level;
-            node.children.forEach(child => firstWalk(child, level + 1));
 
-            if (node.children.length === 0) {
-                // Leaf node
-                // In a real Walker, would check left sibling. Here simplified:
-                node.prelim = 0;
-                // Check left sibling in this recursion level if we had sibling pointers
-                // Since we are iterating children array, we can check previous index
-            } else {
-                // Parent node
-                const leftChild = node.children[0];
-                const rightChild = node.children[node.children.length - 1];
-
-                // Center over children
-                // The midpoint of children is (left_child_X + right_child_X) / 2
-                // BUT we need to account for node widths.
-                // Center = (left_child_center + right_child_center) / 2
-                // We use prelim as the 'center x' coordinate for now? No, Walker uses relative.
-
-                // Let's implement a simpler "Center Logic":
-                // x = (minChildX + maxChildX) / 2
-                // This requires children to have been placed relative to each other.
-                // But first walk is usually setting up relationships.
-            }
-        };
 
         // Actually, writing a full Walker algo from scratch in one shot is risky.
         // Let's use a simpler heuristic: "Layered Tree".
@@ -160,7 +133,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
     };
 
     // Handle multiple roots (forest)
-    let forestX = 0;
+    // Handle multiple roots (forest)
     roots.forEach(root => {
         layoutTree(root);
         // Shift entire tree if we had width calc... 
