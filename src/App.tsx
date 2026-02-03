@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import FamilyCanvas from './components/FamilyCanvas';
 import AddPersonModal from './components/AddPersonModal';
 import CreateFamilyModal from './components/CreateFamilyModal';
@@ -158,6 +159,7 @@ function App() {
         isOpen={isUserManualOpen}
         onClose={handleCloseModals}
       />
+      <Analytics />
     </div>
   );
 }

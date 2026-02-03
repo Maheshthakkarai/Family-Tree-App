@@ -14,6 +14,7 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
     "@types/dagre": "^0.7.53",
+    "@vercel/analytics": "^1.6.1",
     "dagre": "^0.8.5",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.27.1",
